@@ -1,6 +1,6 @@
 #! /bin/bash
 
-KUBERNETES_VERSION="1.21.1-00"
+KUBERNETES_VERSION="1.25.4-00"
 
 # disable swap 
 sudo swapoff -a
@@ -12,12 +12,19 @@ echo "Swap diasbled..."
 sudo ufw disable
 
 # install dependencies
+sudo sed -i 's/^DNS=*/DNS=223.5.5.5\ 223.6.6.6\ 114.114.114.114/g' /etc/systemd/resolved.conf
+sudo systemctl restart systemd-resolved
+sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+sudo sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl wget software-properties-common
 curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update -y
 sudo apt-get install -y docker-ce
+
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.2.6/cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
+sudo dpkg -i cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
 
 echo "Dependencies installed..."
 
@@ -30,9 +37,20 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 EOF
 
 # start docker
-sudo systemctl enable docker
-sudo systemctl daemon-reload
-sudo systemctl restart docker
+# sudo systemctl enable docker
+# sudo systemctl daemon-reload
+# sudo systemctl restart docker
+
+cat <<EOF |sudo tee /usr/lib/systemd/system/cri-dockerd.service
+ExecStart=/usr/bin/cri-dockerd --container-runtime-endpoint fd:// --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-cache-dir=/var/lib/cni/cache --cni-conf-dir=/etc/cni/net.d
+EOF
+
+sudo systemctl daemon-reload;sudo systemctl restart cri-dockerd.service; sudo systemctl enable cri-dockerd
+
+sudo mkdir /etc/sysconfig
+cat <<EOF |sudo tee /etc/sysconfig/kubelet
+KUBELET_KUBEADM_ARGS="--container-runtime=remote --container-runtime-endpoint=/run/cri-dockerd.sock"
+EOF
 
 echo "Docker installed and configured..."
 

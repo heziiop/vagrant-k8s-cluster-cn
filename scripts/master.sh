@@ -4,12 +4,12 @@ MASTER_IP="10.0.0.80"
 NODENAME=$(hostname -s)
 SERVICE_CIDR="10.96.0.0/12"
 POD_CIDR="10.244.0.0/16"
-KUBE_VERSION=v1.21.1
+KUBE_VERSION=v1.25.4
 
 # preload coredns for special handling
-COREDNS_VERSION=1.8.0
-sudo docker pull registry.aliyuncs.com/google_containers/coredns:$COREDNS_VERSION
-sudo docker tag registry.aliyuncs.com/google_containers/coredns:$COREDNS_VERSION registry.aliyuncs.com/google_containers/coredns/coredns:v$COREDNS_VERSION
+#COREDNS_VERSION=1.8.0
+#sudo docker pull registry.aliyuncs.com/google_containers/coredns:$COREDNS_VERSION
+#sudo docker tag registry.aliyuncs.com/google_containers/coredns:$COREDNS_VERSION registry.aliyuncs.com/google_containers/coredns/coredns:v$COREDNS_VERSION
 
 # kubeadm init
 sudo kubeadm init \
