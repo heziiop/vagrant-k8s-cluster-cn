@@ -1,6 +1,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box_check_update = false
-  config.vagrant.plugins = ["vagrant-libvirt", "vagrant-share"]
+  config.vagrant.plugins = ["vagrant-libvirt"]
+  config.vm.synced_folder ".", "/vagrant", type: "nfs", mount_options: ["vers=3,tcp"]
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt update -y
