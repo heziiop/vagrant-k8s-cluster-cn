@@ -55,7 +55,7 @@ echo "Docker installed and configured..."
 # install kubelet, kubectl, kubeadm
 curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
 cat <<EOF | sudo tee /etc/apt/sources.list.d/kubenetes.list
-deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+deb https://mirrors.ustc.edu.cn/kubernetes/apt/ kubernetes-xenial main
 EOF
 
 sudo apt-get update -y
