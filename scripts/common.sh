@@ -12,7 +12,7 @@ echo "Swap diasbled..."
 sudo ufw disable
 
 # install dependencies
-sudo sed -i 's/^DNS=*/DNS=223.5.5.5\ 223.6.6.6\ 114.114.114.114/g' /etc/systemd/resolved.conf
+sudo sed -i 's/^DNS=.*/DNS=223.5.5.5\ 223.6.6.6\ 114.114.114.114/g' /etc/systemd/resolved.conf
 sudo systemctl restart systemd-resolved
 sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
 sudo sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
@@ -31,26 +31,24 @@ echo "Dependencies installed..."
 # configure docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
 {
-  "registry-mirrors": ["https://registry.cn-hangzhou.aliyuncs.com"],
+  "registry-mirrors": ["https://okako4t8.mirror.aliyuncs.com",
+                      "https://docker.mirrors.ustc.edu.cn"
+  ],
   "exec-opts":["native.cgroupdriver=systemd"]
 }
 EOF
 
 # start docker
-# sudo systemctl enable docker
-# sudo systemctl daemon-reload
-# sudo systemctl restart docker
+sudo systemctl enable docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
-cat <<EOF |sudo tee /usr/lib/systemd/system/cri-dockerd.service
-ExecStart=/usr/bin/cri-dockerd --container-runtime-endpoint fd:// --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-cache-dir=/var/lib/cni/cache --cni-conf-dir=/etc/cni/net.d
-EOF
+sudo sed -i 's/^ExecStart=.*/ExecStart=\/usr\/bin\/cri-dockerd --container-runtime-endpoint fd:\/\/ --network-plugin=cni --cni-bin-dir=\/opt\/cni\/bin --cni-cache-dir=\/var\/lib\/cni\/cache --cni-conf-dir=\/etc\/cni\/net.d/g' /lib/systemd/system/cri-docker.service
 
-sudo systemctl daemon-reload;sudo systemctl restart cri-dockerd.service; sudo systemctl enable cri-dockerd
 
-sudo mkdir /etc/sysconfig
-cat <<EOF |sudo tee /etc/sysconfig/kubelet
-KUBELET_KUBEADM_ARGS="--container-runtime=remote --container-runtime-endpoint=/run/cri-dockerd.sock"
-EOF
+sudo systemctl daemon-reload
+sudo systemctl restart cri-docker.service
+sudo systemctl enable cri-docker
 
 echo "Docker installed and configured..."
 

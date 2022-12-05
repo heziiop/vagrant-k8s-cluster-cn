@@ -19,7 +19,8 @@ sudo kubeadm init \
   --service-cidr=$SERVICE_CIDR \
   --pod-network-cidr=$POD_CIDR \
   --node-name=$NODENAME \
-  --ignore-preflight-errors=Swap
+  --ignore-preflight-errors=Swap \
+  --cri-socket=unix:///run/cri-dockerd.sock
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
