@@ -44,7 +44,8 @@ echo $joinShell > $config_path/join.sh
 
 # install calico network plugin
 # sudo wget https://docs.projectcalico.org/manifests/calico.yaml
-sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+wget https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f kube-flannel.yml
 
 sudo -i -u vagrant bash << EOF
 mkdir -p /home/vagrant/.kube
