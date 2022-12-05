@@ -39,11 +39,12 @@ sudo cp -i /etc/kubernetes/admin.conf $config_path/config
 sudo touch $config_path/join.sh
 sudo chmod +x $config_path/join.sh       
 
-kubeadm token create --print-join-command > $config_path/join.sh
+joinShell="`kubeadm token create --print-join-command` --cri-socket=unix:///run/cri-dockerd.sock"
+echo $joinShell > $config_path/join.sh
 
 # install calico network plugin
-sudo wget https://docs.projectcalico.org/manifests/calico.yaml
-sudo kubectl apply -f calico.yaml
+# sudo wget https://docs.projectcalico.org/manifests/calico.yaml
+sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 
 sudo -i -u vagrant bash << EOF
 mkdir -p /home/vagrant/.kube

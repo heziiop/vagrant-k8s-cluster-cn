@@ -5,7 +5,7 @@ do
     sleep 1
 done
 
-/bin/bash /vagrant/configs/join.sh -v
+sudo /bin/bash /vagrant/configs/join.sh -v
 
 # sudo -i -u vagrant bash << EOF
 # mkdir -p /home/vagrant/.kube
