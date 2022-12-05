@@ -23,8 +23,8 @@ sudo add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/l
 sudo apt-get update -y
 sudo apt-get install -y docker-ce
 
-wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.2.6/cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
-sudo dpkg -i cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
+# wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.2.6/cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
+sudo dpkg -i /vagrant/cri-dockerd_0.2.6.3-0.ubuntu-bionic_amd64.deb
 
 echo "Dependencies installed..."
 
