@@ -2,6 +2,9 @@
 
 KUBERNETES_VERSION="1.25.4-00"
 
+# delete last config
+sudo rm -rf /vagrant/configs/*
+
 # disable swap 
 sudo swapoff -a
 sudo sed -ri 's/.*swap.*/#&/' /etc/fstab 
